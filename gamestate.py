@@ -1,6 +1,6 @@
 from encounter import Encounter
 from party import Party
-from hero import Knight
+import hero
 from boss import TrainingDummy
 import random
 
@@ -18,8 +18,11 @@ class GameState:
         party = Party(self.rng)
         boss = TrainingDummy(self.rng)
 
-        party.add_member(Knight(self.rng))
+        party.add_member(hero.Knight(self.rng))
+        party.add_member(hero.Archer(self.rng))
+        party.add_member(hero.Wizard(self.rng))
+        party.add_member(hero.Priest(self.rng))
 
-        encounter = Encounter(party, boss)
+        encounter = Encounter(self.rng, party, boss)
 
         encounter.start()

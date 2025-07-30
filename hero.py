@@ -1,4 +1,5 @@
 from skill import Skill
+from skills.skills import disciplined_slash
 import random
 
 class Hero:
@@ -15,6 +16,7 @@ class Hero:
         self.rng = rng
 
     def take_turn(self, game_state):
+        #raise NotImplementedError("Subclasses must implement this method!")
         pass
 
     def end_turn(self, game_state):
@@ -35,10 +37,28 @@ class Knight(Hero):
         self.name = "Knight"
 
     def take_turn(self, game_state):
-        skill = Skill("Disciplined Slash", 0, self.disciplined_slash)
-        skill.cast(self, game_state.boss)
+        disciplined_slash.cast(self, game_state.boss)
+    
+class Archer(Hero):
+    def __init__(self, rng):
+        super().__init__(rng)
+        self.name = "Archer"
 
-    def disciplined_slash(self, skill, user, target):
-        damage = self.rng.randint(2,4)
-        target.take_damage(damage)
-        return f"{skill.name} deals {damage} damage to {target.name}!"
+    def take_turn(self, game_state):
+        return super().take_turn(game_state)
+    
+class Wizard(Hero):
+    def __init__(self, rng):
+        super().__init__(rng)
+        self.name = "Wizard"
+
+    def take_turn(self, game_state):
+        return super().take_turn(game_state)
+    
+class Priest(Hero):
+    def __init__(self, rng):
+        super().__init__(rng)
+        self.name = "Priest"
+
+    def take_turn(self, game_state):
+        return super().take_turn(game_state)

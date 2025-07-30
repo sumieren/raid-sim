@@ -22,4 +22,4 @@ class TrainingDummy(Boss):
     def __init__(self, rng):
         super().__init__(rng)
         self.name = "Training Dummy"
-        self._hp = 10
+        self._hp = 100

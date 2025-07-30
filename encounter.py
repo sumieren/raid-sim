@@ -5,10 +5,11 @@ class Encounter:
     Individual boss fight. Receives data from gamestate
     and executes the boss fight. Returns rewards.
     """
-    
-    def __init__(self, party, boss):
-        self._party = party
-        self._boss = boss
+
+    def __init__(self, rng, party, boss):
+        self.rng = rng
+        self.party = party
+        self.boss = boss
 
         self._turn_count = 1
 
@@ -19,8 +20,8 @@ class Encounter:
 
         while not self.is_fight_over():
             print(f"Turn #{self._turn_count}")
-            self.take_turn(self._party, self._boss)
-            self.end_turn(self._party, self._boss)
+            self.take_turn(self.party, self.boss)
+            self.end_turn(self.party, self.boss)
 
             # Interim check if game is over, so we don't need to wait for next turn.
             if self.is_fight_over():
@@ -82,15 +83,11 @@ class Encounter:
             return False, timeout
         
     def is_fight_over(self):
-        if self._boss.hp <= 0:
-            print(f"{self._boss.name} was defeated!\n")
+        if self.boss.hp <= 0:
+            print(f"{self.boss.name} was defeated!\n")
             return True
         return False
-
-    @property
-    def party(self):
-        return self._party
     
-    @property
-    def boss(self):
-        return self._boss
+    def handle_skill_effects(self, effect, targets):
+        # f"{skill.name} deals {damage} damage to {targets.name}!"
+        pass

@@ -8,8 +8,12 @@ class Party:
         self.members.append(hero)
 
     def take_turn(self, game_state):
+        selected_actions = []
+
         for hero in self.members:
-            hero.take_turn(game_state)
+            selected_actions.append(hero.take_turn(game_state))
+
+        return selected_actions
 
     def end_turn(self, game_state):
         # call end turn on heroes
