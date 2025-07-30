@@ -1,24 +1,21 @@
 class Encounter:
-    def __init__(self):
-        self.name = ""
-        self._hp = 0
+    def __init__(self, party, encounter):
+        self._party = party
+        self._encounter = encounter
 
-    def take_turn(self, game_state):
-        pass
+        self._turn_count = 0
 
-    def end_turn(self, game_state):
-        pass
-
-    def take_damage(self, damage):
-        self._hp -= damage
-        if self.hp == 0:
-            print("Enemy defeated!")
+    def is_fight_over(self):
+        if self.encounter.hp <= 0:
+            print(f"{self.encounter.name} was defeated!\n")
+            self._winner = self.party.members
+            return True
+        return False
 
     @property
-    def hp(self):
-        return self._hp
-    
-class TrainingDummy(Encounter):
-    def __init__(self):
-        self.name = "Training Dummy"
-        self._hp = 10
+    def party(self):
+        return self._party
+
+    @property
+    def encounter(self):
+        return self._encounter

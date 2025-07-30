@@ -1,7 +1,8 @@
 from party import Party
 from hero import Knight
-from encounter import TrainingDummy
+from boss import TrainingDummy
 from gamestate import GameState
+from encounter import Encounter
 import time
 
 def main():
@@ -11,22 +12,24 @@ def main():
 
     # Create game state
     party.add_member(Knight())
-    game = GameState(party, encounter)
+    game = Encounter(party, encounter)
 
     # Start game loop
-    game_over = False
-
     auto_advance = False
     timeout = 2.0
 
-    while not game_over:
+    while not game.is_fight_over():
         take_turn(game, party, encounter)
         end_turn(game, party, encounter)
 
+        # Interim check if game is over, so we don't need to wait for next turn.
+        if game.is_fight_over():
+            break
+        
         auto_advance, timeout = wait_for_next_turn(auto_advance, timeout)
 
     # Display result
-    print(f"The winner is: {game.get_winner}")
+    print("You win!")
 
 def take_turn(game_state, party, encounter):
     party.take_turn(game_state)
@@ -75,9 +78,6 @@ def wait_for_next_turn(auto_advance, timeout):
         # Empty line for clarity
         print()
         return False, timeout
-
-def is_battle_over(party, encounter):
-    pass
 
 if __name__ == "__main__":
     main()

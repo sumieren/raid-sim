@@ -28,7 +28,7 @@ class Knight(Hero):
 
     def take_turn(self, game_state):
         skill = Skill("Disciplined Slash", 0, self.disciplined_slash)
-        skill.cast(self, game_state.get_encounter())
+        skill.cast(self, game_state.encounter)
 
     def disciplined_slash(self, skill, user, target):
         target.take_damage(1)
