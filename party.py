@@ -1,5 +1,6 @@
 class Party:
-    def __init__(self, size=4):
+    def __init__(self, rng, size=4):
+        self.rng = rng
         self.size = size
         self.members = []
 

@@ -1,6 +1,8 @@
 class Boss:
-    def __init__(self):
+    def __init__(self, rng):
         self.name = ""
+        self.rng = rng
+
         self._hp = 0
 
     def take_turn(self, game_state):
@@ -17,6 +19,7 @@ class Boss:
         return self._hp
     
 class TrainingDummy(Boss):
-    def __init__(self):
+    def __init__(self, rng):
+        super().__init__(rng)
         self.name = "Training Dummy"
         self._hp = 10

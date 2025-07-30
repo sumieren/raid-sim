@@ -1,9 +1,18 @@
 from skill import Skill
+import random
 
 class Hero:
-    def __init__(self):
+    def __init__(self, rng):
         self._hp = 0
         self._mp = 0
+
+        self.str = 0
+        self.dex = 0
+        self.int = 0
+        self.vit = 0
+        self.mnd = 0
+
+        self.rng = rng
 
     def take_turn(self, game_state):
         pass
@@ -21,8 +30,8 @@ class Hero:
         return self._mp
 
 class Knight(Hero):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, rng):
+        super().__init__(rng)
         self.name = "Knight"
 
     def take_turn(self, game_state):
@@ -30,5 +39,6 @@ class Knight(Hero):
         skill.cast(self, game_state.boss)
 
     def disciplined_slash(self, skill, user, target):
-        target.take_damage(1)
-        return f"{skill.name} deals 1 damage to {target.name}!"
+        damage = self.rng.randint(2,4)
+        target.take_damage(damage)
+        return f"{skill.name} deals {damage} damage to {target.name}!"

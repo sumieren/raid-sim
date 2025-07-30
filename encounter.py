@@ -1,6 +1,11 @@
 import time
 
 class Encounter:
+    """
+    Individual boss fight. Receives data from gamestate
+    and executes the boss fight. Returns rewards.
+    """
+    
     def __init__(self, party, boss):
         self._party = party
         self._boss = boss
