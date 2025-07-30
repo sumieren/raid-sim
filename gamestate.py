@@ -3,8 +3,11 @@ class GameState:
         self._party = party
         self._encounter = encounter
 
-        self.turn_count = 0
-        self.winner = ""
+        self._turn_count = 0
+        self._winner = ""
 
     def get_encounter(self):
         return self._encounter
+    
+    def get_winner(self):
+        return self.winner

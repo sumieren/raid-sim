@@ -31,5 +31,5 @@ class Knight(Hero):
         skill.cast(self, game_state.get_encounter())
 
     def disciplined_slash(self, skill, user, target):
-        # deal 1 damage
+        target.take_damage(1)
         return f"{skill.name} deals 1 damage to {target.name}!"
