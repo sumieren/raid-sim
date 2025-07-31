@@ -4,12 +4,12 @@ def fn_disciplined_slash(skill, user, target):
     skill.description = "A powerful slash at a single enemy."
 
     damage = user.rng.randint(2,4)
-    target.take_damage(damage)
+    #target.take_damage(damage)
     return {
         "type": "damage",
-        "amount": damage,
+        "damage": damage,
         "user": user,
-        "targets": target,
+        "targets": [target],
         "skill": skill
     }
 disciplined_slash = Skill(

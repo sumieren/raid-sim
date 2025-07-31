@@ -1,4 +1,4 @@
-from log import log_action;
+from log import log_skill;
 
 class Skill:
     def __init__(self, name, cooldown, effect_function, job_lock=None):
@@ -9,7 +9,7 @@ class Skill:
 
         self.description = ""
 
-    @log_action
-    def cast(self, user, target):
-        return self.effect(self, user, target)
+    @log_skill
+    def cast(self, user, targets):
+        return self.effect(self, user, targets)
     

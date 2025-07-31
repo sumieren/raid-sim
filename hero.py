@@ -37,7 +37,7 @@ class Knight(Hero):
         self.name = "Knight"
 
     def take_turn(self, game_state):
-        disciplined_slash.cast(self, game_state.boss)
+        return disciplined_slash.cast(self, game_state.boss)
     
 class Archer(Hero):
     def __init__(self, rng):

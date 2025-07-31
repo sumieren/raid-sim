@@ -11,7 +11,9 @@ class Party:
         selected_actions = []
 
         for hero in self.members:
-            selected_actions.append(hero.take_turn(game_state))
+            action = hero.take_turn(game_state)
+            if action:
+                selected_actions.append(action)
 
         return selected_actions
 

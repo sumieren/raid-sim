@@ -1,4 +1,5 @@
 import time
+from log import log_damage
 
 class Encounter:
     """
@@ -35,7 +36,9 @@ class Encounter:
         print("You win!")
 
     def take_turn(self, party, encounter):
-        party.take_turn(self)
+        party_actions = party.take_turn(self)
+        for action in party_actions:
+            self.handle_action(action)
         encounter.take_turn(self)
 
     def end_turn(self, party, encounter):
@@ -88,6 +91,19 @@ class Encounter:
             return True
         return False
     
-    def handle_skill_effects(self, effect, targets):
-        # f"{skill.name} deals {damage} damage to {targets.name}!"
+    def handle_action(self, data):
+        match (data["type"]):
+            # Receives type == damage, amount of base damage, user object, targets list and skill object
+            case "damage":
+                targets = data["targets"]
+                crit_chance = 0.5
+                is_crit = self.rng.random() < crit_chance
+                final_damage = data["damage"]
+                if is_crit:
+                    final_damage *= 3
+
+                for target in targets:
+                    target.take_damage(final_damage)
+
+                log_damage(data["skill"], final_damage, data["targets"], is_crit)
         pass
