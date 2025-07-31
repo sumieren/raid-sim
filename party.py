@@ -9,13 +9,16 @@ class Party:
 
     def take_turn(self, game_state):
         selected_actions = []
+        log = []
 
         for hero in self.members:
-            action = hero.take_turn(game_state)
+            action, msg = hero.take_turn(game_state)
             if action:
                 selected_actions.append(action)
+            if msg:
+                log.extend(msg)
 
-        return selected_actions
+        return selected_actions, log
 
     def end_turn(self, game_state):
         # call end turn on heroes

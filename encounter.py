@@ -20,26 +20,33 @@ class Encounter:
         timeout = 2.0
 
         while not self.is_fight_over():
-            print(f"Turn #{self._turn_count}")
-            self.take_turn(self.party, self.boss)
+            turn_log = []
+            turn_log.extend(self.take_turn(self.party, self.boss))
             self.end_turn(self.party, self.boss)
+
+            self.print_ui()
+            for msg in turn_log:
+                print(msg)
 
             # Interim check if game is over, so we don't need to wait for next turn.
             if self.is_fight_over():
                 break
-            
+
             auto_advance, timeout = self.wait_for_next_turn(auto_advance, timeout)
 
             self._turn_count += 1
+            
 
         # Display result
         print("You win!")
 
     def take_turn(self, party, encounter):
-        party_actions = party.take_turn(self)
+        party_actions, log = party.take_turn(self)
         for action in party_actions:
-            self.handle_action(action)
+            log.extend(self.handle_action(action))
         encounter.take_turn(self)
+
+        return log
 
     def end_turn(self, party, encounter):
         party.end_turn(self)
@@ -83,6 +90,7 @@ class Encounter:
             
             # Empty line for clarity
             print()
+            print()
             return False, timeout
         
     def is_fight_over(self):
@@ -91,19 +99,31 @@ class Encounter:
             return True
         return False
     
+    def print_ui(self):
+        print(f"Turn #{self._turn_count}")
+
+        for member in self.party.members:
+            print(f"{member.name}: {member.hp}/{member.max_hp}", end=" ")
+
+        spacer = " " * 30
+        print(f"{spacer}{self.boss.name} {self.boss_hp_bar()} {self.boss.hp}/{self.boss.max_hp}")
+
+    def boss_hp_bar(self):
+        return f"|███████████|"
+
     def handle_action(self, data):
         match (data["type"]):
             # Receives type == damage, amount of base damage, user object, targets list and skill object
             case "damage":
                 targets = data["targets"]
+                final_damage = data["damage"]
+
                 crit_chance = 0.5
                 is_crit = self.rng.random() < crit_chance
-                final_damage = data["damage"]
                 if is_crit:
                     final_damage *= 3
 
                 for target in targets:
                     target.take_damage(final_damage)
 
-                log_damage(data["skill"], final_damage, data["targets"], is_crit)
-        pass
+                return log_damage(data["skill"], final_damage, data["targets"], is_crit)

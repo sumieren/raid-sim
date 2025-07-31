@@ -3,9 +3,14 @@ from skills.skills import disciplined_slash
 import random
 
 class Hero:
-    def __init__(self, rng):
-        self._hp = 0
-        self._mp = 0
+    def __init__(self, hp, mp, rng):
+        self.tier = 1
+
+        self._hp = hp
+        self._mp = mp
+
+        self._cur_hp = self._hp
+        self._cur_mp = self._mp
 
         self.str = 0
         self.dex = 0
@@ -17,7 +22,7 @@ class Hero:
 
     def take_turn(self, game_state):
         #raise NotImplementedError("Subclasses must implement this method!")
-        pass
+        return (None, None)
 
     def end_turn(self, game_state):
         # manage buffs and debuffs
@@ -26,6 +31,10 @@ class Hero:
 
     @property
     def hp(self):
+        return self._cur_hp
+    
+    @property
+    def max_hp(self):
         return self._hp
     
     def mp(self):
@@ -33,7 +42,7 @@ class Hero:
 
 class Knight(Hero):
     def __init__(self, rng):
-        super().__init__(rng)
+        super().__init__(hp=10, mp=10, rng=rng)
         self.name = "Knight"
 
     def take_turn(self, game_state):
@@ -41,7 +50,7 @@ class Knight(Hero):
     
 class Archer(Hero):
     def __init__(self, rng):
-        super().__init__(rng)
+        super().__init__(hp=10, mp=10, rng=rng)
         self.name = "Archer"
 
     def take_turn(self, game_state):
@@ -49,7 +58,7 @@ class Archer(Hero):
     
 class Wizard(Hero):
     def __init__(self, rng):
-        super().__init__(rng)
+        super().__init__(hp=10, mp=10, rng=rng)
         self.name = "Wizard"
 
     def take_turn(self, game_state):
@@ -57,7 +66,7 @@ class Wizard(Hero):
     
 class Priest(Hero):
     def __init__(self, rng):
-        super().__init__(rng)
+        super().__init__(hp=10, mp=10, rng=rng)
         self.name = "Priest"
 
     def take_turn(self, game_state):

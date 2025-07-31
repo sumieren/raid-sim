@@ -1,9 +1,10 @@
 class Boss:
-    def __init__(self, rng):
+    def __init__(self, hp, rng):
         self.name = ""
         self.rng = rng
 
-        self._hp = 0
+        self._hp = hp
+        self._cur_hp = self._hp
 
     def take_turn(self, game_state):
         pass
@@ -12,14 +13,17 @@ class Boss:
         pass
 
     def take_damage(self, damage):
-        self._hp -= damage
+        self._cur_hp -= damage
 
     @property
     def hp(self):
+        return self._cur_hp
+    
+    @property
+    def max_hp(self):
         return self._hp
     
 class TrainingDummy(Boss):
     def __init__(self, rng):
-        super().__init__(rng)
+        super().__init__(hp=100, rng=rng)
         self.name = "Training Dummy"
-        self._hp = 100
