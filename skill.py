@@ -13,7 +13,7 @@ class Skill:
 
     @log_skill
     def cast(self, user, targets):
-        self.current_cooldown = self.cooldown
+        self.current_cooldown = self.cooldown + 1
 
         if self.turns_off_cooldown > 0:
             self.turns_off_cooldown = 0

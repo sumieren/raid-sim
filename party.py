@@ -21,5 +21,5 @@ class Party:
         return selected_actions, log
 
     def end_turn(self, game_state):
-        # call end turn on heroes
-        pass
+        for hero in self.members:
+            hero.end_turn(game_state)

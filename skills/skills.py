@@ -1,28 +1,28 @@
 from skill import Skill
 
-def fn_disciplined_slash(skill, user, target):
+def fn_disciplined_slash(skill, user, targets):
     damage = user.rng.randint(2,4)
     return {
         "type": "damage",
         "damage": damage,
         "user": user,
-        "targets": [target],
+        "targets": [targets],
         "skill": skill
     }
 def disciplined_slash(): return Skill(
-        name="Disciplined Slash",
-        description="A powerful slash at a single enemy.",
-        cooldown=0,
-        effect_function=fn_disciplined_slash
-    )
+    name="Disciplined Slash",
+    description="A powerful slash at a single enemy.",
+    cooldown=0,
+    effect_function=fn_disciplined_slash
+)
 
-def fn_fireball(skill, user, target):
+def fn_fireball(skill, user, targets):
     damage = user.rng.randint(5,10)
     return {
         "type": "damage",
         "damage": damage,
         "user": user,
-        "targets": [target],
+        "targets": [targets],
         "skill": skill
     }
 def fireball(): return Skill(

@@ -17,6 +17,8 @@ class Hero:
         self.vit = 0
         self.mnd = 0
 
+        self.skills = []
+
         self.rng = rng
 
     def take_turn(self, game_state):
@@ -26,7 +28,8 @@ class Hero:
     def end_turn(self, game_state):
         # manage buffs and debuffs
         # tick down cooldowns by 1 turn
-        pass
+        for skill in self.skills:
+            skill.pass_turn()
 
     @property
     def hp(self):
@@ -45,16 +48,20 @@ class Knight(Hero):
         super().__init__(hp=10, mp=10, rng=rng)
         self.name = "Knight"
 
+        self.skills = [disciplined_slash()]
+
     def take_turn(self, game_state):
-        return disciplined_slash.cast(self, game_state.boss)
+        return self.skills[0].cast(self, game_state.boss)
     
 class Archer(Hero):
     def __init__(self, rng):
         super().__init__(hp=10, mp=10, rng=rng)
         self.name = "Archer"
 
+        self.skills = [disciplined_slash()]
+
     def take_turn(self, game_state):
-        return disciplined_slash.cast(self, game_state.boss)
+        return self.skills[0].cast(self, game_state.boss)
     
 from skills.skills import fireball
 class Wizard(Hero):
@@ -62,8 +69,14 @@ class Wizard(Hero):
         super().__init__(hp=10, mp=10, rng=rng)
         self.name = "Wizard"
 
+        self.skills = [fireball()]
+
     def take_turn(self, game_state):
-        return fireball.cast(self, game_state.boss)
+        print(f"fireball's cd: {self.skills[0].current_cooldown}")
+        if self.skills[0].current_cooldown == 0:
+            return self.skills[0].cast(self, game_state.boss)
+        else:
+            return (None, None)
     
 class Priest(Hero):
     def __init__(self, rng):
