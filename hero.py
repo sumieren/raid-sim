@@ -1,5 +1,4 @@
 from skill import Skill
-from skills.skills import disciplined_slash
 import random
 
 class Hero:
@@ -40,6 +39,7 @@ class Hero:
     def mp(self):
         return self._mp
 
+from skills.skills import disciplined_slash
 class Knight(Hero):
     def __init__(self, rng):
         super().__init__(hp=10, mp=10, rng=rng)
@@ -54,15 +54,16 @@ class Archer(Hero):
         self.name = "Archer"
 
     def take_turn(self, game_state):
-        return super().take_turn(game_state)
+        return disciplined_slash.cast(self, game_state.boss)
     
+from skills.skills import fireball
 class Wizard(Hero):
     def __init__(self, rng):
         super().__init__(hp=10, mp=10, rng=rng)
         self.name = "Wizard"
 
     def take_turn(self, game_state):
-        return super().take_turn(game_state)
+        return fireball.cast(self, game_state.boss)
     
 class Priest(Hero):
     def __init__(self, rng):
