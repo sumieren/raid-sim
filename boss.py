@@ -15,6 +15,9 @@ class Boss:
     def take_damage(self, damage):
         self._cur_hp -= damage
 
+        if self._cur_hp < 0:
+            self._cur_hp = 0
+
     @property
     def hp(self):
         return self._cur_hp

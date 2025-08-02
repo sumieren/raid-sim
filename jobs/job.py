@@ -1,7 +1,7 @@
 from skill import Skill
 import random
 
-class Hero:
+class Job:
     def __init__(self, hp, mp, rng):
         self.tier = 1
 
@@ -41,19 +41,9 @@ class Hero:
     
     def mp(self):
         return self._mp
-
-from skills.skills import disciplined_slash
-class Knight(Hero):
-    def __init__(self, rng):
-        super().__init__(hp=10, mp=10, rng=rng)
-        self.name = "Knight"
-
-        self.skills = [disciplined_slash()]
-
-    def take_turn(self, game_state):
-        return self.skills[0].cast(self, game_state.boss)
     
-class Archer(Hero):
+from skills.skills import disciplined_slash
+class Archer(Job):
     def __init__(self, rng):
         super().__init__(hp=10, mp=10, rng=rng)
         self.name = "Archer"
@@ -64,7 +54,7 @@ class Archer(Hero):
         return self.skills[0].cast(self, game_state.boss)
     
 from skills.skills import fireball
-class Wizard(Hero):
+class Wizard(Job):
     def __init__(self, rng):
         super().__init__(hp=10, mp=10, rng=rng)
         self.name = "Wizard"
@@ -72,13 +62,12 @@ class Wizard(Hero):
         self.skills = [fireball()]
 
     def take_turn(self, game_state):
-        print(f"fireball's cd: {self.skills[0].current_cooldown}")
         if self.skills[0].current_cooldown == 0:
             return self.skills[0].cast(self, game_state.boss)
         else:
             return (None, None)
     
-class Priest(Hero):
+class Priest(Job):
     def __init__(self, rng):
         super().__init__(hp=10, mp=10, rng=rng)
         self.name = "Priest"
