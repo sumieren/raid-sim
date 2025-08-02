@@ -1,6 +1,8 @@
 from skill import Skill
 import random
 
+from .registry import register_job
+
 class Job:
     def __init__(self, hp, mp, rng):
         self.tier = 1
@@ -43,6 +45,7 @@ class Job:
         return self._mp
     
 from skills.skills import disciplined_slash
+@register_job
 class Archer(Job):
     def __init__(self, rng):
         super().__init__(hp=10, mp=10, rng=rng)
@@ -54,6 +57,7 @@ class Archer(Job):
         return self.skills[0].cast(self, game_state.boss)
     
 from skills.skills import fireball
+@register_job
 class Wizard(Job):
     def __init__(self, rng):
         super().__init__(hp=10, mp=10, rng=rng)
@@ -67,6 +71,7 @@ class Wizard(Job):
         else:
             return (None, None)
     
+@register_job
 class Priest(Job):
     def __init__(self, rng):
         super().__init__(hp=10, mp=10, rng=rng)
