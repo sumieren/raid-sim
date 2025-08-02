@@ -118,8 +118,8 @@ class Encounter:
                 targets = data["targets"]
                 final_damage = data["damage"]
 
-                crit_chance = 0.05
-                is_crit = self.rng.random() < crit_chance
+                print(f"Crit chance in attack: {data["user"].crit_chance}")
+                is_crit = self.rng.random() < data["user"].crit_chance
                 if is_crit:
                     final_damage *= 3
 

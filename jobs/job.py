@@ -1,17 +1,9 @@
-from skill import Skill
-import random
-
 from .registry import register_job
 
 class Job:
     def __init__(self, hp, mp, rng):
-        self.tier = 1
-
         self._hp = hp
-        self._mp = mp
-
         self._cur_hp = self._hp
-        self._cur_mp = self._mp
 
         self.str = 0
         self.dex = 0
@@ -19,13 +11,14 @@ class Job:
         self.vit = 0
         self.mnd = 0
 
+        self.crit_chance = 0.05
+
         self.skills = []
 
         self.rng = rng
 
     def take_turn(self, game_state):
-        #raise NotImplementedError("Subclasses must implement this method!")
-        return (None, None)
+        raise NotImplementedError("Subclasses must implement this method!")
 
     def end_turn(self, game_state):
         # manage buffs and debuffs
@@ -40,9 +33,6 @@ class Job:
     @property
     def max_hp(self):
         return self._hp
-    
-    def mp(self):
-        return self._mp
     
 from skills.skills import disciplined_slash
 @register_job
@@ -78,4 +68,4 @@ class Priest(Job):
         self.name = "Priest"
 
     def take_turn(self, game_state):
-        return super().take_turn(game_state)
+        return (None, None)
