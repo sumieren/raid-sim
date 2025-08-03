@@ -26,7 +26,7 @@ class Party:
         selected_actions = []
         log = []
 
-        for hero in self.members:
+        for hero in sorted(self.members, key=lambda h: h.speed, reverse=True):
             action, msg = hero.take_turn(game_state)
             if not action:
                 continue

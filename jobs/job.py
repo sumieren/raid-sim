@@ -40,6 +40,8 @@ class Archer(Job):
         super().__init__(hp=10, mp=10, rng=rng)
         self.name = "Archer"
 
+        self.speed = 7
+
         self.skills = [disciplined_slash()]
 
     def take_turn(self, game_state):
@@ -51,6 +53,8 @@ class Wizard(Job):
     def __init__(self, rng):
         super().__init__(hp=10, mp=10, rng=rng)
         self.name = "Wizard"
+
+        self.speed = 4
 
         self.skills = [fireball()]
 
@@ -65,6 +69,8 @@ class Priest(Job):
     def __init__(self, rng):
         super().__init__(hp=10, mp=10, rng=rng)
         self.name = "Priest"
+
+        self.speed = 4
 
     def take_turn(self, game_state):
         return (None, None)

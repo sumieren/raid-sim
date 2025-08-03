@@ -9,6 +9,8 @@ class Knight(Job):
         super().__init__(hp=10, mp=10, rng=rng)
         self.name = "Knight"
 
+        self.speed = 5
+
         self.skills = [disciplined_slash()]
 
     def take_turn(self, game_state):
