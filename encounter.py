@@ -25,6 +25,9 @@ class Encounter:
             turn_log.extend(self.take_turn(self.party, self.boss))
             self.end_turn(self.party, self.boss)
 
+            #test zone for effects
+
+
             self.print_ui()
             for msg in turn_log:
                 print(msg)
@@ -34,8 +37,6 @@ class Encounter:
                 break
 
             auto_advance, timeout = self.wait_for_next_turn(auto_advance, timeout)
-
-            self._turn_count += 1
             
 
         # Display result
@@ -53,7 +54,7 @@ class Encounter:
         party.end_turn(self)
         encounter.end_turn(self)
 
-        #advance game state by 1 turn
+        self._turn_count += 1
 
     def wait_for_next_turn(self, auto_advance, timeout):
         """ 
@@ -119,10 +120,12 @@ class Encounter:
                 targets = data["targets"]
                 final_damage = data["damage"] + (self.party.power * Party.POWER_SCALING)
 
-                is_crit = self.rng.random() < data["user"].crit_chance
+                is_crit = self.party.inspiration_check(data["user"].crit_chance)
                 if is_crit:
                     final_damage *= 3
 
+                # Accuracy is one of the rare chances not affected by Inspiration, because it's generally at 100% and can get lowered by mechanics.
+                # These mechanics would have no point if any amount of inspiration mitigated it.
                 is_miss = data["user"].accuracy < self.rng.random()
                 if is_miss:
                     final_damage = 0

@@ -1,9 +1,15 @@
 from log import log_bonus_action
 
 class Party:
-    POWER_SCALING = 1.0           # Amount of increased damage/healing/etc 1 point of Power gives.
+    POWER_SCALING = 1.0           # Amount of increased damage/healing/etc 1 point of Power gives
+    TENACITY_TO_HP = 10           # Amount of max HP gained per point of tenacity
+    TENACITY_BLOCK_CHANCE = 0.05  # Percentage to trigger tenacity damage reduction per point of tenacity
+    TENACITY_BLOCK_AMOUNT = 0.3   # Percent of damage blocked by a tenacity block (Currently does not scale with tenacity check if this works in playtests)
+    # todo: tenacity debuff effects
 
-    SYNERGY_PROC_CHANCE = 0.005   # How much bonus turn chance per point of synergy
+    SYNERGY_PROC_CHANCE = 0.005   # Bonus turn chance per point of synergy
+
+    INSPIRATION_BOOST = 0.1       # Percentage by which all chance-based effects are increased per point of inspiration
 
     def __init__(self, rng, size=4):
         self.rng = rng
@@ -12,7 +18,7 @@ class Party:
 
         # Party-wide stats, primary progression next to job advancements.
         self.power = 0              # Governs damage and healing output
-        self.tenacity = 0           # Governs damage taken, chance to take less damage, debuff duration
+        self.tenacity = 1000000           # Governs damage taken, chance to take less damage, debuff duration
         self.alacrity = 0           # Governs gauge and a chance to reduce cd
         self.synergy = 0            # Governs buffs and a chance to give another teammate another action
         self.focus = 0              # Governs crit, accuracy, dodges
@@ -54,10 +60,19 @@ class Party:
             hero.end_turn(game_state)
 
     def check_synergy_proc(self, procced_from, eligible_members):
-        is_proc = self.rng.random() < (self.inspiration * self.SYNERGY_PROC_CHANCE)
+        is_proc = self.inspiration_check(self.SYNERGY_PROC_CHANCE)
         chosen_member = self.rng.choice(eligible_members)
 
         if is_proc:
             return chosen_member, log_bonus_action(procced_from, chosen_member)
         else:
             return None, None
+        
+    def inspiration_check(self, base_chance):
+        """
+        Returns True if a chance-based effect succeeds, factoring in party-wide inspiration.
+        - base_chance is the base probability (0.0–1.0).
+        - party.inspiration boosts the base chance.
+        """
+        true_chance = base_chance * (1 + (self.inspiration * Party.INSPIRATION_BOOST))
+        return self.rng.random() < min(true_chance, 1.0)

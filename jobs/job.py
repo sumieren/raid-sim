@@ -1,4 +1,5 @@
 from .registry import register_job
+from party import Party
 
 class Job:
     def __init__(self, hp, mp, rng):
@@ -21,9 +22,28 @@ class Job:
 
     def end_turn(self, game_state):
         # manage buffs and debuffs
-        # tick down cooldowns by 1 turn
         for skill in self.skills:
             skill.pass_turn()
+
+    def take_damage(self, game_state, damage, tenacity):
+        is_tenacity = game_state.party.inspiration_check(tenacity * Party.TENACITY_BLOCK_CHANCE)
+        if is_tenacity:
+            damage *= (1 - Party.TENACITY_BLOCK_AMOUNT)
+        self._cur_hp -= round(damage)
+
+        if self._cur_hp < 0:
+            self._cur_hp = 0
+
+        # For logging purposes, we need to send a message if Tenacity procced
+        if is_tenacity:
+            return True
+        else:
+            return False
+
+    def gain_max_hp(self, amount, in_encounter=False):
+        self._hp += amount
+        if not in_encounter:
+            self._cur_hp = self._hp
 
     @property
     def hp(self):
@@ -62,7 +82,7 @@ class Wizard(Job):
         if self.skills[0].current_cooldown == 0:
             return self.skills[0].cast(self, game_state.boss)
         else:
-            return (None, None)
+            return (None, ["Wizard was unable to act."])
     
 @register_job
 class Priest(Job):
