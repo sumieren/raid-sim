@@ -1,4 +1,14 @@
 from log import log_bonus_action
+from enum import Enum, auto
+
+class Stat(Enum):
+    POWER = auto()
+    TENACITY = auto()
+    ALACRITY = auto()
+    SYNERGY = auto()
+    FOCUS = auto()
+    ADAPTABILITY = auto()
+    INSPIRATION = auto()
 
 class Party:
     POWER_SCALING = 1.0           # Amount of increased damage/healing/etc 1 point of Power gives
@@ -18,7 +28,7 @@ class Party:
 
         # Party-wide stats, primary progression next to job advancements.
         self.power = 0              # Governs damage and healing output
-        self.tenacity = 1000000           # Governs damage taken, chance to take less damage, debuff duration
+        self.tenacity = 0           # Governs damage taken, chance to take less damage, debuff duration
         self.alacrity = 0           # Governs gauge and a chance to reduce cd
         self.synergy = 0            # Governs buffs and a chance to give another teammate another action
         self.focus = 0              # Governs crit, accuracy, dodges
@@ -58,6 +68,32 @@ class Party:
     def end_turn(self, game_state):
         for hero in self.members:
             hero.end_turn(game_state)
+
+    def gain_stat(self, stat, amount, in_encounter=False):
+        match (stat):
+            case Stat.POWER:
+                pass
+            case Stat.TENACITY:
+                if in_encounter:
+                    print("The party gained Tenacity, but temporary buffs haven't been implemented yet.")
+                else:
+                    self.tenacity += amount
+
+                # Gain max_hp
+                for member in self.members:
+                    member.gain_max_hp(amount, in_encounter)
+            case Stat.ALACRITY:
+                pass
+            case Stat.SYNERGY:
+                pass
+            case Stat.FOCUS:
+                pass
+            case Stat.ADAPTABILITY:
+                pass
+            case Stat.INSPIRATION:
+                pass
+            case _:
+                raise ValueError(f"Unknown stat: {stat}") 
 
     def check_synergy_proc(self, procced_from, eligible_members):
         is_proc = self.inspiration_check(self.SYNERGY_PROC_CHANCE)

@@ -1,6 +1,6 @@
 import time
 from log import log_damage
-from party import Party
+from party import Party, Stat
 
 class Encounter:
     """
@@ -26,7 +26,7 @@ class Encounter:
             self.end_turn(self.party, self.boss)
 
             #test zone for effects
-
+            self.party.gain_stat(Stat.TENACITY, 1, in_encounter=True)
 
             self.print_ui()
             for msg in turn_log:
