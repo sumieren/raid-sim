@@ -1,5 +1,6 @@
 import time
 from log import log_damage
+from party import Party
 
 class Encounter:
     """
@@ -116,7 +117,7 @@ class Encounter:
             # Receives type == damage, amount of base damage, user object, targets list and skill object
             case "damage":
                 targets = data["targets"]
-                final_damage = data["damage"]
+                final_damage = data["damage"] + (self.party.power * Party.POWER_SCALING)
 
                 is_crit = self.rng.random() < data["user"].crit_chance
                 if is_crit:
@@ -125,6 +126,8 @@ class Encounter:
                 is_miss = data["user"].accuracy < self.rng.random()
                 if is_miss:
                     final_damage = 0
+
+                final_damage = round(final_damage)
 
                 for target in targets:
                     target.take_damage(final_damage)
