@@ -118,12 +118,15 @@ class Encounter:
                 targets = data["targets"]
                 final_damage = data["damage"]
 
-                print(f"Crit chance in attack: {data["user"].crit_chance}")
                 is_crit = self.rng.random() < data["user"].crit_chance
                 if is_crit:
                     final_damage *= 3
 
+                is_miss = data["user"].accuracy < self.rng.random()
+                if is_miss:
+                    final_damage = 0
+
                 for target in targets:
                     target.take_damage(final_damage)
 
-                return log_damage(data["skill"], final_damage, data["targets"], is_crit)
+                return log_damage(data["skill"], final_damage, data["targets"], is_crit, is_miss)

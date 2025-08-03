@@ -13,6 +13,8 @@ def _emit_event(event_type, data):
         case "skill_use":
             return f"{data["user"]} uses {data["skill"]} on {data["targets"]}!"
         case "damage_dealt":
+            if data["is_miss"]:
+                return f"{data["skill"]} missed!"
             crit_str = "CRITICAL! " if data["is_crit"] else ""
             return f"{crit_str}{data["skill"]} deals {data["damage"]} damage to {data["targets"]}!"
         case _:
@@ -29,13 +31,14 @@ def log_skill(func):
         })]
     return wrapper
 
-def log_damage(skill, damage, targets, is_crit=False):
+def log_damage(skill, damage, targets, is_crit=False, is_miss=False):
     log = []
     for target in targets:
         log.append(_emit_event('damage_dealt', {
             'skill': skill.name,
             'damage': damage,
             'is_crit': is_crit,
+            'is_miss': is_miss,
             'targets': target.name,
         }))
     return log

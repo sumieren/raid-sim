@@ -4,6 +4,15 @@ class Party:
         self.size = size
         self.members = []
 
+        # Party-wide stats, primary progression next to job advancements.
+        self.power = 0          # Governs damage dealt
+        self.tenacity = 0       # Governs damage taken, chance to take less damage, debuff duration
+        self.alacrity = 0       # Governs gauge and extra actions
+        self.synergy = 0        # Governs teamwork = morale, teamwide gauge gains, random proc buffs
+        self.focus = 0          # Governs crit, accuracy, dodges
+        self.adaptability = 0   # Governs stun rate, provides chance to interrupt boss casts
+        self.inspiration = 0    # Governs all random chance (skills and stats)
+
     def add_member(self, hero):
         self.members.append(hero)
 

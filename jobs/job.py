@@ -5,13 +5,12 @@ class Job:
         self._hp = hp
         self._cur_hp = self._hp
 
-        self.str = 0
-        self.dex = 0
-        self.int = 0
-        self.vit = 0
-        self.mnd = 0
+        self.speed = 0
 
         self.crit_chance = 0.05
+        self.accuracy = 1.0
+        self.block_chance = 0.0
+        self.gauge_boost = 0
 
         self.skills = []
 
