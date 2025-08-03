@@ -23,7 +23,7 @@ class GameState:
         party.add_member(JOB_REGISTRY["Knight"](self.rng))
         party.add_member(JOB_REGISTRY["Archer"](self.rng))
         party.add_member(JOB_REGISTRY["Wizard"](self.rng))
-        party.add_member(JOB_REGISTRY["Priest"](self.rng))
+        party.add_member(JOB_REGISTRY["Knight"](self.rng))
 
         encounter = Encounter(self.rng, party, boss)
 
