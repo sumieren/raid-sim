@@ -14,6 +14,7 @@ class Encounter:
         self.boss = boss
 
         self._turn_count = 1
+        
 
     def start(self):
         # Start game loop
@@ -48,9 +49,9 @@ class Encounter:
             log.extend(self.handle_action(action))
 
         boss_actions, boss_log = boss.take_turn(self)
-        for action in boss_actions:
-            # handle boss action
-            log.extend(boss_log)
+        log.extend(boss_log)
+        for action in boss_actions:   
+            log.extend(self.handle_boss_action(action))
 
         return log
 
@@ -177,4 +178,16 @@ class Encounter:
                 return log_damage(data["skill"], final_damage, data["targets"], is_crit, is_miss)
             
     def handle_boss_action(self, data):
-        pass
+        match (data["type"]):
+            # Receives type == damage, attack name, user, damage, targets whether it is dodgeable
+            case "damage":
+                targets = data["targets"]
+                damage = data["damage"]
+
+                damage = round(damage)
+                for target in targets:
+                    target.take_damage(self, damage, self.party.tenacity, data["dodgeable"])
+
+                return log_boss_damage(data["attack_name"], damage, targets)
+
+                

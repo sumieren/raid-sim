@@ -28,7 +28,7 @@ class Job:
     def gauge_status(self):
         return "test"
 
-    def take_damage(self, game_state, damage, tenacity):
+    def take_damage(self, game_state, damage, tenacity, dodgeable):
         is_tenacity = game_state.party.inspiration_check(tenacity * Party.TENACITY_BLOCK_CHANCE)
         if is_tenacity:
             damage *= (1 - Party.TENACITY_BLOCK_AMOUNT)

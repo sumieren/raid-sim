@@ -11,12 +11,15 @@ def _emit_event(event_type, data):
 
     match (event_type):
         case "skill_use":
-            return f"{data["user"]} uses {data["skill"]} on {data["targets"]}!"
+            return f"{data["user"]} uses {data["skill"]} on {data["target"]}!"
         case "damage_dealt":
             if data["is_miss"]:
                 return f"{data["skill"]} missed!"
             crit_str = "CRITICAL! " if data["is_crit"] else ""
-            return f"{crit_str}{data["skill"]} deals {data["damage"]} damage to {data["targets"]}!"
+            return f"{crit_str}{data["skill"]} deals {data["damage"]} damage to {data["target"]}!"
+        
+        case "boss_damage":
+            return f"{data["attack"]} deals {data["damage"]} damage to {data["target"]}."
         case _:
             raise Exception("Unexpected event_type sent to logger, check for typos")
 
@@ -26,7 +29,7 @@ def log_skill(func):
 
         return result, [_emit_event('skill_use', {
             'user': user.name,
-            'targets': targets.name,
+            'target': targets.name,
             'skill': skill.name
         })]
     return wrapper
@@ -39,7 +42,7 @@ def log_damage(skill, damage, targets, is_crit=False, is_miss=False):
             'damage': damage,
             'is_crit': is_crit,
             'is_miss': is_miss,
-            'targets': target.name,
+            'target': target.name,
         }))
     return log
 
@@ -49,8 +52,9 @@ def log_boss_damage(attack_name, damage, targets):
         log.append(_emit_event('boss_damage', {
             'attack': attack_name,
             'damage': damage,
-            'targets': targets
+            'target': target.name,
         }))
+    return log
 
 # TO DO make it work with emit_event
 def log_bonus_action(giver, receiver):

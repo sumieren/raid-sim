@@ -70,6 +70,7 @@ class Boss:
                 self.state = BossState.STUNNED
                 self.next_action = lambda game_state: self.be_stunned(2)
                 self.telegraph_targets = []
+                self._cur_stagger = self.stun_threshold
             else:
                 # If boss already stunned, just clamp stagger to max for now.
                 self._cur_stagger = self.stun_threshold
@@ -83,7 +84,7 @@ class Boss:
         else:
             return None, [], log
 
-    def deal_damage(self, attack_name, min_dmg, max_dmg, targets):
+    def deal_damage(self, attack_name, min_dmg, max_dmg, targets, dodgeable=True):
         base_dmg = self.rng.randint(min_dmg, max_dmg)
         return {
             'type': 'damage',
@@ -91,6 +92,7 @@ class Boss:
             'user': self,
             'damage': base_dmg,
             'targets': targets,
+            'dodgeable': dodgeable,
         }
 
     @property
