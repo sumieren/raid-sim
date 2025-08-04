@@ -25,6 +25,9 @@ class Job:
         for skill in self.skills:
             skill.pass_turn()
 
+    def gauge_status(self):
+        return "test"
+
     def take_damage(self, game_state, damage, tenacity):
         is_tenacity = game_state.party.inspiration_check(tenacity * Party.TENACITY_BLOCK_CHANCE)
         if is_tenacity:

@@ -96,7 +96,7 @@ class Party:
                 raise ValueError(f"Unknown stat: {stat}") 
 
     def check_synergy_proc(self, procced_from, eligible_members):
-        is_proc = self.inspiration_check(self.SYNERGY_PROC_CHANCE)
+        is_proc = self.inspiration_check(self.SYNERGY_PROC_CHANCE * self.synergy)
         chosen_member = self.rng.choice(eligible_members)
 
         if is_proc:

@@ -1,5 +1,5 @@
 import time
-from log import log_damage
+from log import log_damage, log_boss_damage
 from party import Party, Stat
 
 class Encounter:
@@ -26,6 +26,8 @@ class Encounter:
             self.end_turn(self.party, self.boss)
 
             #test zone for effects
+            if self._turn_count == 3:
+                self.boss.take_stagger(100)
 
             self.print_ui()
             for msg in turn_log:
@@ -36,7 +38,8 @@ class Encounter:
                 break
 
             auto_advance, timeout = self.wait_for_next_turn(auto_advance, timeout)
-            
+
+            self._turn_count += 1 
 
         # Display result
         print("You win!")
@@ -53,7 +56,6 @@ class Encounter:
         party.end_turn(self)
         encounter.end_turn(self)
 
-        self._turn_count += 1
 
     def wait_for_next_turn(self, auto_advance, timeout):
         """ 
@@ -103,14 +105,31 @@ class Encounter:
     def print_ui(self):
         print(f"Turn #{self._turn_count}")
 
-        for member in self.party.members:
-            print(f"{member.name}: {member.hp}/{member.max_hp}", end=" ")
+        members_per_line = 2
+        num_members = len(self.party.members)
+        lines = []
+
+        # For each 2 party members, generate a line with their name, HP and gauge stats
+        for i in range (0, num_members, members_per_line):
+            left = " ".join(f"{member.name}: {member.hp}/{member.max_hp} [{member.gauge_status()}]"
+                        for member in self.party.members[i:i+members_per_line])
+            lines.append(left)
 
         spacer = " " * 30
-        print(f"{spacer}{self.boss.name} {self.boss_hp_bar()} {self.boss.hp}/{self.boss.max_hp}")
+
+        # For the first 2 lines, add boss info with a spacer
+        for index, line in enumerate(lines):
+            right = ""
+            if index == 0:
+                right = self.boss.name
+            elif index == 1:
+                right = self.boss_hp_bar()
+            print(f"{line}{spacer}{right}")
+
+        print()
 
     def boss_hp_bar(self):
-        return f"|███████████|"
+        return f"|███████████| {self.boss.hp}/{self.boss.max_hp}"
 
     def handle_action(self, data):
         match (data["type"]):
@@ -130,8 +149,10 @@ class Encounter:
                     final_damage = 0
 
                 final_damage = round(final_damage)
-
                 for target in targets:
                     target.take_damage(final_damage)
 
                 return log_damage(data["skill"], final_damage, data["targets"], is_crit, is_miss)
+            
+    def handle_boss_action(self, data):
+        pass

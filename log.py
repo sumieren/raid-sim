@@ -43,6 +43,15 @@ def log_damage(skill, damage, targets, is_crit=False, is_miss=False):
         }))
     return log
 
-# TO DO make it worth with emit_event
+def log_boss_damage(attack_name, damage, targets):
+    log = []
+    for target in targets:
+        log.append(_emit_event('boss_damage', {
+            'attack': attack_name,
+            'damage': damage,
+            'targets': targets
+        }))
+
+# TO DO make it work with emit_event
 def log_bonus_action(giver, receiver):
     return [f"[SYNERGY] Lucky! {giver.name} triggered a bonus action for {receiver.name}!"]
