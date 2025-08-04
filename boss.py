@@ -17,6 +17,7 @@ class Boss:
 
         self._stun_threshold = 100
         self._cur_stagger = 0
+        self._stun_reset_pending = False
 
         self.state = BossState.STANDARD
 
@@ -44,7 +45,14 @@ class Boss:
 
 
     def end_turn(self, game_state):
-        pass
+        # Check if the stun is over, reset the state. 
+        if self._stun_reset_pending:
+            self.state = BossState.STANDARD
+            self._cur_stagger = 0
+            self._stun_reset_pending = False
+        # But if the boss is on the last stun turn (They are stunned, but their action next turn is not being stunned) flag resetting the stun gauge.
+        if self.state == BossState.STUNNED and self.next_action is None:
+            self._stun_reset_pending = True
 
     def take_damage(self, damage):
         self._cur_hp -= damage
@@ -56,11 +64,15 @@ class Boss:
         print(f"Boss took {stagger} stagger dmg!")
         self._cur_stagger += stagger
 
-        if self._cur_stagger >= self.stagger:
-            # override upcoming back and targets to a 2 turn stun and erase the target list
-            self.next_action = lambda game_state: self.be_stunned(2)
-            self.telegraph_targets = []
-
+        if self._cur_stagger >= self.stun_threshold:
+            if self.state is not BossState.STUNNED:
+                # override upcoming back and targets to a 2 turn stun and erase the target list
+                self.state = BossState.STUNNED
+                self.next_action = lambda game_state: self.be_stunned(2)
+                self.telegraph_targets = []
+            else:
+                # If boss already stunned, just clamp stagger to max for now.
+                self._cur_stagger = self.stun_threshold
     def be_stunned(self, turn_count):
         turn_count -= 1
 
@@ -69,12 +81,10 @@ class Boss:
         if turn_count > 0:
             return lambda game_state: self.be_stunned(turn_count), [], log
         else:
-            self._cur_stagger = 0
             return None, [], log
 
     def deal_damage(self, attack_name, min_dmg, max_dmg, targets):
         base_dmg = self.rng.randint(min_dmg, max_dmg)
-        print(f"dealing {base_dmg} damage to {targets}")
         return {
             'type': 'damage',
             'attack_name': attack_name,

@@ -25,9 +25,7 @@ class Encounter:
             turn_log.extend(self.take_turn(self.party, self.boss))
             self.end_turn(self.party, self.boss)
 
-            #test zone for effects
-            if self._turn_count == 3:
-                self.boss.take_stagger(300)
+            self.boss.take_stagger(34)
 
             self.print_ui()
             for msg in turn_log:
@@ -121,7 +119,7 @@ class Encounter:
 
         spacer = " " * 30
 
-        # For the first 3 lines: boss name, HP bar, and stagger bar
+        # For the first 2 lines: boss name, HP bar
         for index, line in enumerate(lines):
             right = ""
             if index == 0:
