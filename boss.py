@@ -15,7 +15,7 @@ class Boss:
         self._hp = hp
         self._cur_hp = self._hp
 
-        self.stagger = 100
+        self._stun_threshold = 100
         self._cur_stagger = 0
 
         self.state = BossState.STANDARD
@@ -69,6 +69,7 @@ class Boss:
         if turn_count > 0:
             return lambda game_state: self.be_stunned(turn_count), [], log
         else:
+            self._cur_stagger = 0
             return None, [], log
 
     def deal_damage(self, attack_name, min_dmg, max_dmg, targets):
@@ -89,6 +90,14 @@ class Boss:
     @property
     def max_hp(self):
         return self._hp
+    
+    @property
+    def stagger(self):
+        return self._cur_stagger
+    
+    @property
+    def stun_threshold(self):
+        return self._stun_threshold
     
 class Phase:
     def __init__(self, rng, rot_type, moves):

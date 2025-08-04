@@ -27,7 +27,7 @@ class Encounter:
 
             #test zone for effects
             if self._turn_count == 3:
-                self.boss.take_stagger(100)
+                self.boss.take_stagger(300)
 
             self.print_ui()
             for msg in turn_log:
@@ -121,19 +121,39 @@ class Encounter:
 
         spacer = " " * 30
 
-        # For the first 2 lines, add boss info with a spacer
+        # For the first 3 lines: boss name, HP bar, and stagger bar
         for index, line in enumerate(lines):
             right = ""
             if index == 0:
-                right = self.boss.name
+                right = self.boss.name + "    " + self.draw_gauge(self.boss.hp, self.boss.max_hp, label="[HP]")
             elif index == 1:
-                right = self.boss_hp_bar()
+                right = (len(self.boss.name) * " ") + "    " + self.draw_gauge(self.boss.stagger, self.boss.stun_threshold, label="[ST]")
             print(f"{line}{spacer}{right}")
 
         print()
-
-    def boss_hp_bar(self):
-        return f"|███████████| {self.boss.hp}/{self.boss.max_hp}"
+    
+    def draw_gauge(self, current, max_value, bar_length=10, label=""):
+        # Get hp ratio and round to find how many are filled and which are partially filled.
+        # Then loop over all bars to see how far filled or empty they should be
+        ratio = max(0, min(1, current / max_value))
+        filled = int(ratio * bar_length)
+        partial_fill = ratio * bar_length - filled
+        chars = "█▓▒░-"
+        dither = ""
+        for i in range(bar_length):
+            if i < filled:
+                dither += chars[0]     # Solid fill
+            elif i == filled and partial_fill > 0:
+                # Pick character according to fraction (optional: finer granularity if you want)
+                if partial_fill > 0.7:
+                    dither += chars[1] # Heavy dither
+                elif partial_fill > 0.35:
+                    dither += chars[2] # Mid dither
+                else:
+                    dither += chars[3] # Light dither
+            else:
+                dither += chars[-1]    # Empty
+        return f"{label}|{dither}| {current}/{max_value}"
 
     def handle_action(self, data):
         match (data["type"]):
