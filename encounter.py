@@ -44,17 +44,21 @@ class Encounter:
         # Display result
         print("You win!")
 
-    def take_turn(self, party, encounter):
+    def take_turn(self, party, boss):
         party_actions, log = party.take_turn(self)
         for action in party_actions:
             log.extend(self.handle_action(action))
-        encounter.take_turn(self)
+
+        boss_actions, boss_log = boss.take_turn(self)
+        for action in boss_actions:
+            # handle boss action
+            log.extend(boss_log)
 
         return log
 
-    def end_turn(self, party, encounter):
+    def end_turn(self, party, boss):
         party.end_turn(self)
-        encounter.end_turn(self)
+        boss.end_turn(self)
 
 
     def wait_for_next_turn(self, auto_advance, timeout):
