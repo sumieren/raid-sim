@@ -43,14 +43,12 @@ class Boss:
 
 
     def end_turn(self, game_state):
-        # Check if the stun is over, reset the state. 
-        if self._stun_reset_pending:
+        # But if the boss is on the last stun turn reset the gauge
+        if self.state == BossState.STUNNED and self.next_action is None:
             self.state = BossState.STANDARD
             self._cur_stagger = 0
             self._stun_reset_pending = False
-        # But if the boss is on the last stun turn (They are stunned, but their action next turn is not being stunned) flag resetting the stun gauge.
-        if self.state == BossState.STUNNED and self.next_action is None:
-            self._stun_reset_pending = True
+            print(f"{self.name} recovers from stun.")
 
     def take_damage(self, damage):
         self._cur_hp -= damage
@@ -59,7 +57,6 @@ class Boss:
             self._cur_hp = 0
 
     def take_stagger(self, stagger):
-        print(f"Boss took {stagger} stagger dmg!")
         self._cur_stagger += stagger
 
         if self._cur_stagger >= self.stun_threshold:
@@ -72,13 +69,16 @@ class Boss:
             else:
                 # If boss already stunned, just clamp stagger to max for now.
                 self._cur_stagger = self.stun_threshold
-    def be_stunned(self, turn_count):
-        turn_count -= 1
+    def be_stunned(self, turn_count, first=True):
+        #turn_count -= 1
 
-        log = [f"{self.name} is stunned and took additional damage from all attacks!"]
+        if first:
+            log = [f"{self.name} was stunned!"]
+        else:
+            log = [f"{self.name} is stunned and took additional damage from all attacks!"]
         
         if turn_count > 0:
-            return lambda game_state: self.be_stunned(turn_count), None, log
+            return lambda game_state: self.be_stunned(turn_count-1, first=False), None, log
         else:
             return None, None, log
 
