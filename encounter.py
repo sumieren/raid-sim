@@ -1,4 +1,5 @@
 import time
+import math
 from log import log_damage, log_boss_damage
 from party import Party, Stat
 
@@ -24,13 +25,14 @@ class Encounter:
         while not self.is_fight_over():
             turn_log = []
             turn_log.extend(self.take_turn(self.party, self.boss))
-            self.end_turn(self.party, self.boss)
-
-            self.boss.take_stagger(34)
 
             self.print_ui()
             for msg in turn_log:
                 print(msg)
+                
+            self.end_turn(self.party, self.boss)
+
+
 
             # Interim check if game is over, so we don't need to wait for next turn.
             if self.is_fight_over():
@@ -171,7 +173,6 @@ class Encounter:
                 targets = data["targets"]
                 final_damage = data["damage"] + (self.party.power * Party.POWER_SCALING)
 
-
                 is_crit = self.party.inspiration_check(data["user"].crit_chance + (self.party.focus * Party.FOCUS_CRIT_CHANCE))
                 if is_crit:
                     final_damage *= 3
@@ -182,9 +183,15 @@ class Encounter:
                 if is_miss:
                     final_damage = 0
 
+                # Regular damage slowly builds stagger.
+                damage_stagger_ratio = 0.01
+                final_stagger = (final_damage * damage_stagger_ratio) * (1 + (self.party.adaptability * Party.ADAPT_STAGGER_BOOST))
+
                 final_damage = round(final_damage)
+                final_stagger = math.ceil(final_stagger)
                 for target in targets:
                     target.take_damage(final_damage)
+                    target.take_stagger(final_stagger)
                     log.extend(log_damage(data["skill"], final_damage, [target], is_crit, is_miss))
 
                 return log

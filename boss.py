@@ -29,8 +29,6 @@ class Boss:
 
     def take_turn(self, game_state):
         tuples = []
-        actions = []
-        log = []
 
         # Reset telegraph targets
         self.telegraph_targets = []

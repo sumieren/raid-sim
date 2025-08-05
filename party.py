@@ -16,12 +16,15 @@ class Party:
     TENACITY_BLOCK_CHANCE = 0.05  # Percentage to trigger tenacity damage reduction per point of tenacity
     TENACITY_BLOCK_AMOUNT = 0.3   # Percent of damage blocked by a tenacity block (Currently does not scale with tenacity check if this works in playtests)
     # todo: tenacity debuff effects
+    # todo: alacrity gauge boost
+    ALACRITY_CD_CHANCE = 0.02     # Percent chance to reduce cooldown by 1 for each point in alacrity
     # todo: synergy buff effects
     SYNERGY_PROC_CHANCE = 0.005   # Bonus turn chance per point of synergy
     FOCUS_CRIT_CHANCE = 0.05      # Amount of crit added per point in focus
     FOCUS_ACCURACY = 0.075        # Amount of accuracy per point in focus
     FOCUS_DODGE_CHANCE = 0.01     # Chance to dodge per point in focus
-
+    ADAPT_STAGGER_BOOST = 0.05    # Percentage of stagger that comes from skills (or regular damage) is increased by
+    ADAPT_INTERRUPT = 0.05        # Percentage chance to interrupt a boss cast # TODO ADD THIS
     INSPIRATION_BOOST = 0.1       # Percentage by which all chance-based effects are increased per point of inspiration
 
     def __init__(self, rng, size=4):
