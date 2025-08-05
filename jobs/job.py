@@ -11,6 +11,7 @@ class Job:
         self.crit_chance = 0.05
         self.accuracy = 1.0
         self.block_chance = 0.0
+        self.dodge_chance = 0.0
         self.gauge_boost = 0
 
         self.skills = []
@@ -28,20 +29,24 @@ class Job:
     def gauge_status(self):
         return "test"
 
-    def take_damage(self, game_state, damage, tenacity, dodgeable):
-        is_tenacity = game_state.party.inspiration_check(tenacity * Party.TENACITY_BLOCK_CHANCE)
-        if is_tenacity:
-            damage *= (1 - Party.TENACITY_BLOCK_AMOUNT)
-        self._cur_hp -= round(damage)
-
-        if self._cur_hp < 0:
-            self._cur_hp = 0
-
-        # For logging purposes, we need to send a message if Tenacity procced
-        if is_tenacity:
-            return True
+    def take_damage(self, game_state, damage, dodgeable=True):
+        is_dodge = game_state.party.inspiration_check(self.dodge_chance + (game_state.party.focus * Party.FOCUS_DODGE_CHANCE)) if dodgeable else False
+        if is_dodge:
+            return "dodge"
         else:
-            return False
+            is_block = game_state.party.inspiration_check(self.block_chance + (game_state.party.tenacity * Party.TENACITY_BLOCK_CHANCE))
+            if is_block:
+                damage *= (1 - Party.TENACITY_BLOCK_AMOUNT)
+
+            self._cur_hp -= round(damage)
+
+            if self._cur_hp < 0:
+                self._cur_hp = 0
+
+            if is_block:
+                return "block"
+        
+        return None
 
     def gain_max_hp(self, amount, in_encounter=False):
         self._hp += amount

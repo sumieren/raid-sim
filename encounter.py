@@ -158,36 +158,47 @@ class Encounter:
         match (data["type"]):
             # Receives type == damage, amount of base damage, user object, targets list and skill object
             case "damage":
+                log = []
+
                 targets = data["targets"]
                 final_damage = data["damage"] + (self.party.power * Party.POWER_SCALING)
 
-                is_crit = self.party.inspiration_check(data["user"].crit_chance)
+
+                is_crit = self.party.inspiration_check(data["user"].crit_chance + (self.party.focus * Party.FOCUS_CRIT_CHANCE))
                 if is_crit:
                     final_damage *= 3
 
                 # Accuracy is one of the rare chances not affected by Inspiration, because it's generally at 100% and can get lowered by mechanics.
                 # These mechanics would have no point if any amount of inspiration mitigated it.
-                is_miss = data["user"].accuracy < self.rng.random()
+                is_miss = (data["user"].accuracy + (self.party.focus * Party.FOCUS_ACCURACY)) < self.rng.random()
                 if is_miss:
                     final_damage = 0
 
                 final_damage = round(final_damage)
                 for target in targets:
                     target.take_damage(final_damage)
+                    log.extend(log_damage(data["skill"], final_damage, [target], is_crit, is_miss))
 
-                return log_damage(data["skill"], final_damage, data["targets"], is_crit, is_miss)
+                return log
             
     def handle_boss_action(self, data):
         match (data["type"]):
             # Receives type == damage, attack name, user, damage, targets whether it is dodgeable
             case "damage":
+                log = []
                 targets = data["targets"]
                 damage = data["damage"]
 
                 damage = round(damage)
                 for target in targets:
-                    target.take_damage(self, damage, self.party.tenacity, data["dodgeable"])
+                    response = target.take_damage(self, damage, data["dodgeable"])
+                    if response == "dodge":
+                        log.extend(log_boss_damage(data["attack_name"], damage, [target], is_dodge=True))
+                    elif response == "block":
+                        log.extend(log_boss_damage(data["attack_name"], damage, [target], is_block=True))
+                    else:
+                        log.extend(log_boss_damage(data["attack_name"], damage, [target]))
 
-                return log_boss_damage(data["attack_name"], damage, targets)
+                return log
 
                 

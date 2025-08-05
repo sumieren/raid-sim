@@ -19,7 +19,10 @@ def _emit_event(event_type, data):
             return f"{crit_str}{data["skill"]} deals {data["damage"]} damage to {data["target"]}!"
         
         case "boss_damage":
-            return f"{data["attack"]} deals {data["damage"]} damage to {data["target"]}."
+            if data["is_dodge"]:
+                return f"{data["target"]} dodged {data["attack"]}!"
+            block_str = "BLOCK! " if data["is_block"] else ""
+            return f"{block_str}{data["attack"]} deals {data["damage"]} damage to {data["target"]}."
         case _:
             raise Exception("Unexpected event_type sent to logger, check for typos")
 
@@ -46,12 +49,14 @@ def log_damage(skill, damage, targets, is_crit=False, is_miss=False):
         }))
     return log
 
-def log_boss_damage(attack_name, damage, targets):
+def log_boss_damage(attack_name, damage, targets, is_dodge=False, is_block=False):
     log = []
     for target in targets:
         log.append(_emit_event('boss_damage', {
             'attack': attack_name,
             'damage': damage,
+            'is_dodge': is_dodge,
+            'is_block': is_block,
             'target': target.name,
         }))
     return log

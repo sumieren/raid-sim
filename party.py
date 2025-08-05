@@ -18,6 +18,9 @@ class Party:
     # todo: tenacity debuff effects
 
     SYNERGY_PROC_CHANCE = 0.005   # Bonus turn chance per point of synergy
+    FOCUS_CRIT_CHANCE = 0.05      # Amount of crit added per point in focus
+    FOCUS_ACCURACY = 0.075        # Amount of accuracy per point in focus
+    FOCUS_DODGE_CHANCE = 0.01     # Chance to dodge per point in focus
 
     INSPIRATION_BOOST = 0.1       # Percentage by which all chance-based effects are increased per point of inspiration
 
