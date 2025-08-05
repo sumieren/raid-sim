@@ -28,6 +28,7 @@ class Boss:
         self.telegraph_targets = []
 
     def take_turn(self, game_state):
+        tuples = []
         actions = []
         log = []
 
@@ -38,10 +39,9 @@ class Boss:
         if self.next_action is None:
             self.next_action = self._cur_phase.get_next_action()
         self.next_action, action_data, msg = self.next_action(game_state)
-        actions.extend(action_data)
-        log.extend(msg)
+        tuples.append((action_data, msg))
 
-        return actions, log
+        return tuples
 
 
     def end_turn(self, game_state):
@@ -80,9 +80,9 @@ class Boss:
         log = [f"{self.name} is stunned and took additional damage from all attacks!"]
         
         if turn_count > 0:
-            return lambda game_state: self.be_stunned(turn_count), [], log
+            return lambda game_state: self.be_stunned(turn_count), None, log
         else:
-            return None, [], log
+            return None, None, log
 
     def deal_damage(self, attack_name, min_dmg, max_dmg, targets, dodgeable=True):
         base_dmg = self.rng.randint(min_dmg, max_dmg)
@@ -135,6 +135,6 @@ class TrainingDummy(Boss):
         self._cur_phase = Phase(rng, "random", [self.slap])
 
     def slap(self, game_state):
-        action = [self.deal_damage("Slap", 1, 1, game_state.party.members)]
+        action = self.deal_damage("Slap", 1, 1, game_state.party.members)
         log = [f"{self.name} slaps everyone!"]
         return None, action, log

@@ -16,7 +16,7 @@ class Party:
     TENACITY_BLOCK_CHANCE = 0.05  # Percentage to trigger tenacity damage reduction per point of tenacity
     TENACITY_BLOCK_AMOUNT = 0.3   # Percent of damage blocked by a tenacity block (Currently does not scale with tenacity check if this works in playtests)
     # todo: tenacity debuff effects
-
+    # todo: synergy buff effects
     SYNERGY_PROC_CHANCE = 0.005   # Bonus turn chance per point of synergy
     FOCUS_CRIT_CHANCE = 0.05      # Amount of crit added per point in focus
     FOCUS_ACCURACY = 0.075        # Amount of accuracy per point in focus
@@ -31,7 +31,7 @@ class Party:
 
         # Party-wide stats, primary progression next to job advancements.
         self.power = 0              # Governs damage and healing output
-        self.tenacity = 0           # Governs damage taken, chance to take less damage, debuff duration
+        self.tenacity = 0           # Governs max hp, chance to take less damage, debuff duration
         self.alacrity = 0           # Governs gauge and a chance to reduce cd
         self.synergy = 0            # Governs buffs and a chance to give another teammate another action
         self.focus = 0              # Governs crit, accuracy, dodges
@@ -42,31 +42,24 @@ class Party:
         self.members.append(hero)
 
     def take_turn(self, game_state):
-        selected_actions = []
-        log = []
+        tuples = []
 
         for hero in sorted(self.members, key=lambda h: h.speed, reverse=True):
             action, msg = hero.take_turn(game_state)
             if not action:
                 continue
 
-            selected_actions.append(action)
+            tuples.append((action, msg))
 
-            if msg:
-                log.extend(msg)
+            inspired_hero, message = self.check_synergy_proc(hero, [m for m in self.members if m is not hero])
+            if inspired_hero:
+                tuples.append((None, message))
+                a, m = inspired_hero.take_turn(game_state)
 
-            if action:
-                inspired_hero, message = self.check_synergy_proc(hero, [m for m in self.members if m is not hero])
-                if inspired_hero:
-                    log.extend(message)
-                    a, m = inspired_hero.take_turn(game_state)
+                if a and m:
+                    tuples.append((a, m))
 
-                    if a:
-                        selected_actions.append(a)
-                    if m:
-                        log.extend(m)
-
-        return selected_actions, log
+        return tuples
 
     def end_turn(self, game_state):
         for hero in self.members:

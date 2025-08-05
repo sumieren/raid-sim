@@ -44,14 +44,22 @@ class Encounter:
         print("You win!")
 
     def take_turn(self, party, boss):
-        party_actions, log = party.take_turn(self)
-        for action in party_actions:
-            log.extend(self.handle_action(action))
+        log = []
 
-        boss_actions, boss_log = boss.take_turn(self)
-        log.extend(boss_log)
-        for action in boss_actions:   
-            log.extend(self.handle_boss_action(action))
+        party_actions = party.take_turn(self)
+        for action, message in party_actions:
+            if message:
+                log.extend(message)
+            if action:
+                log.extend(self.handle_action(action))
+
+        boss_actions = boss.take_turn(self)
+        for action, message in boss_actions:   
+            if message:
+                log.extend(message)
+            if action:
+                print(action)
+                log.extend(self.handle_boss_action(action))
 
         return log
 
