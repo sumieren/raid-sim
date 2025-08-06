@@ -2,6 +2,7 @@ import time
 import math
 from log import log_damage, log_boss_damage
 from party import Party, Stat
+from boss import BossState
 
 class Encounter:
     """
@@ -29,7 +30,7 @@ class Encounter:
             self.print_ui()
             for msg in turn_log:
                 print(msg)
-                
+
             self.end_turn(self.party, self.boss)
 
 
@@ -182,6 +183,11 @@ class Encounter:
                 is_miss = (data["user"].accuracy + (self.party.focus * Party.FOCUS_ACCURACY)) < self.rng.random()
                 if is_miss:
                     final_damage = 0
+
+                if self.boss.state == BossState.CHARGING:
+                    interrupt_chance = self.party.adaptability * Party.ADAPT_INTERRUPT
+                    if self.party.inspiration_check(interrupt_chance):
+                        self.boss.trigger_interrupt()
 
                 # Regular damage slowly builds stagger.
                 damage_stagger_ratio = 0.01

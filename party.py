@@ -17,14 +17,14 @@ class Party:
     TENACITY_BLOCK_AMOUNT = 0.3   # Percent of damage blocked by a tenacity block (Currently does not scale with tenacity check if this works in playtests)
     # todo: tenacity debuff effects
     # todo: alacrity gauge boost
-    ALACRITY_CD_CHANCE = 0.02     # Percent chance to reduce cooldown by 1 for each point in alacrity
+    ALACRITY_CD_CHANCE = 0.02     # Percent chance to reduce cooldown by 1 for each point in alacrity # TODO add this
     # todo: synergy buff effects
     SYNERGY_PROC_CHANCE = 0.005   # Bonus turn chance per point of synergy
     FOCUS_CRIT_CHANCE = 0.05      # Amount of crit added per point in focus
     FOCUS_ACCURACY = 0.075        # Amount of accuracy per point in focus
     FOCUS_DODGE_CHANCE = 0.01     # Chance to dodge per point in focus
     ADAPT_STAGGER_BOOST = 0.05    # Percentage of stagger that comes from skills (or regular damage) is increased by
-    ADAPT_INTERRUPT = 0.05        # Percentage chance to interrupt a boss cast # TODO ADD THIS
+    ADAPT_INTERRUPT = 5.05        # Percentage chance to interrupt a boss cast # TODO ADD THIS
     INSPIRATION_BOOST = 0.1       # Percentage by which all chance-based effects are increased per point of inspiration
 
     def __init__(self, rng, size=4):
@@ -38,7 +38,7 @@ class Party:
         self.alacrity = 0           # Governs gauge and a chance to reduce cd
         self.synergy = 0            # Governs buffs and a chance to give another teammate another action
         self.focus = 0              # Governs crit, accuracy, dodges
-        self.adaptability = 0       # Governs stun rate, provides chance to interrupt boss casts
+        self.adaptability = 1       # Governs stun rate, provides chance to interrupt boss casts
         self.inspiration = 0        # Governs all random chance (skills and stats)
 
     def add_member(self, hero):

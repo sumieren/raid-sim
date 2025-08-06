@@ -70,8 +70,6 @@ class Boss:
                 # If boss already stunned, just clamp stagger to max for now.
                 self._cur_stagger = self.stun_threshold
     def be_stunned(self, turn_count, first=True):
-        #turn_count -= 1
-
         if first:
             log = [f"{self.name} was stunned!"]
         else:
@@ -81,6 +79,14 @@ class Boss:
             return lambda game_state: self.be_stunned(turn_count-1, first=False), None, log
         else:
             return None, None, log
+        
+    def trigger_interrupt(self):
+        self.state = BossState.STANDARD
+        self.next_action = lambda game_state: self.be_interrupted()
+        self.telegraph_targets = []
+    def be_interrupted(self):
+        log = [f"{self.name}'s attack was interrupted!"]
+        return None, None, log
 
     def deal_damage(self, attack_name, min_dmg, max_dmg, targets, dodgeable=True):
         base_dmg = self.rng.randint(min_dmg, max_dmg)
