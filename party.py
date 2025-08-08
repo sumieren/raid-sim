@@ -24,7 +24,7 @@ class Party:
     FOCUS_ACCURACY = 0.075        # Amount of accuracy per point in focus
     FOCUS_DODGE_CHANCE = 0.01     # Chance to dodge per point in focus
     ADAPT_STAGGER_BOOST = 0.05    # Percentage of stagger that comes from skills (or regular damage) is increased by
-    ADAPT_INTERRUPT = 5.05        # Percentage chance to interrupt a boss cast # TODO ADD THIS
+    ADAPT_INTERRUPT = 0.05        # Percentage chance to interrupt a boss cast
     INSPIRATION_BOOST = 0.1       # Percentage by which all chance-based effects are increased per point of inspiration
 
     def __init__(self, rng, size=4):

@@ -184,7 +184,7 @@ class Encounter:
                 if is_miss:
                     final_damage = 0
 
-                if self.boss.state == BossState.CHARGING:
+                if self.boss.state == BossState.CHARGING and self.boss.next_action:
                     interrupt_chance = self.party.adaptability * Party.ADAPT_INTERRUPT
                     if self.party.inspiration_check(interrupt_chance):
                         self.boss.trigger_interrupt()

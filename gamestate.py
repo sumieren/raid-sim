@@ -4,6 +4,8 @@ from party import Party
 from jobs.registry import JOB_REGISTRY
 
 from boss import TrainingDummy
+
+from utils import get_choice
 import random
 
 class GameState:
