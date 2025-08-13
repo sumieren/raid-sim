@@ -30,9 +30,13 @@ def main_menu():
         game_running = False
 
 def start_game():
+    global current_screen
+    
     game = GameState()
 
     game.start()
+
+    current_screen = "main_menu"
 
 if __name__ == "__main__":
     main()
