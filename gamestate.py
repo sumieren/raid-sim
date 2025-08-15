@@ -34,4 +34,7 @@ class GameState:
 
             encounter.start()
 
+            reward = get_choice("Boss defeated! Pick an upgrade from below, or heal 50% HP for the party instead:", ["cool relic", "heal"])
+            if reward == 1:
+                party.get_healed(0.5, percent_hp=True)
             choice = get_choice("Fight next boss?", ["Yes", "No"])

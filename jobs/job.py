@@ -53,6 +53,9 @@ class Job:
         if not in_encounter:
             self._cur_hp = self._hp
 
+    def get_healed(self, amount):
+        self._cur_hp = max(self._cur_hp + amount, self._hp)
+
     @property
     def hp(self):
         return self._cur_hp

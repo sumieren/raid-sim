@@ -93,6 +93,11 @@ class Party:
                 pass
             case _:
                 raise ValueError(f"Unknown stat: {stat}") 
+            
+    def get_healed(self, amount, percent_hp=False):
+        for member in self.members:
+            heal_amount = member.max_hp * amount if percent_hp else amount
+            member.get_healed(heal_amount)
 
     def check_synergy_proc(self, procced_from, eligible_members):
         is_proc = self.inspiration_check(self.SYNERGY_PROC_CHANCE * self.synergy)
