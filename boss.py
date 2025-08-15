@@ -117,6 +117,8 @@ class Boss:
     
 class Phase:
     def __init__(self, rng, rot_type, moves):
+        if not moves:
+            raise Exception("Empty movelist passed to boss phase")
         self.rng = rng
         self.rot_type = rot_type   # Either 'random' or 'loop'
         self.moves = moves
@@ -126,8 +128,9 @@ class Phase:
         if self.rot_type == "random":
             return self.rng.choice(self.moves)
         elif self.rot_type == "loop":
-            # loop
-            pass
+            move = self.moves[self.index]
+            self.index = (self.index + 1) % len(self.moves)
+            return move
         else:
             raise ValueError("Invalid rotation type passed to Phase")
 
