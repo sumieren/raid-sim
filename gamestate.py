@@ -24,7 +24,7 @@ class GameState:
         party.add_member(JOB_REGISTRY["Knight"](self.rng))
         party.add_member(JOB_REGISTRY["Archer"](self.rng))
         party.add_member(JOB_REGISTRY["Wizard"](self.rng))
-        party.add_member(JOB_REGISTRY["Knight"](self.rng))
+        party.add_member(JOB_REGISTRY["Priest"](self.rng))
 
         choice = 0
         while choice == 0:

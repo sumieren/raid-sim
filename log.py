@@ -17,6 +17,9 @@ def _emit_event(event_type, data):
                 return f"{data["skill"]} missed!"
             crit_str = "CRITICAL! " if data["is_crit"] else ""
             return f"{crit_str}{data["skill"]} deals {data["damage"]} damage to {data["target"]}!"
+        case "heal_dealt":
+            crit_str = "CRITICAL! " if data["is_crit"] else ""
+            return f"{crit_str}{data["skill"]} heals {data["target"]} for {data["amount"]} HP!"
         
         case "boss_damage":
             if data["is_dodge"]:
@@ -45,6 +48,17 @@ def log_damage(skill, damage, targets, is_crit=False, is_miss=False):
             'damage': damage,
             'is_crit': is_crit,
             'is_miss': is_miss,
+            'target': target.name,
+        }))
+    return log
+
+def log_heal(skill, amount, targets, is_crit=False):
+    log = []
+    for target in targets:
+        log.append(_emit_event('heal_dealt', {
+            'skill': skill.name,
+            'amount': amount,
+            'is_crit': is_crit,
             'target': target.name,
         }))
     return log

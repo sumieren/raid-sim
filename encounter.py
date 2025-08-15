@@ -1,6 +1,6 @@
 import time
 import math
-from log import log_damage, log_boss_damage
+from log import log_damage, log_heal, log_boss_damage
 from party import Party, Stat
 from boss import BossState
 
@@ -54,6 +54,7 @@ class Encounter:
             if message:
                 log.extend(message)
             if action:
+                print(action)
                 log.extend(self.handle_action(action))
 
         boss_actions = boss.take_turn(self)
@@ -166,6 +167,7 @@ class Encounter:
         return f"{label}|{dither}| {current}/{max_value}"
 
     def handle_action(self, data):
+        crit_multiplier = 3
         match (data["type"]):
             # Receives type == damage, amount of base damage, user object, targets list and skill object
             case "damage":
@@ -176,7 +178,7 @@ class Encounter:
 
                 is_crit = self.party.inspiration_check(data["user"].crit_chance + (self.party.focus * Party.FOCUS_CRIT_CHANCE))
                 if is_crit:
-                    final_damage *= 3
+                    final_damage *= crit_multiplier
 
                 # Accuracy is one of the rare chances not affected by Inspiration, because it's generally at 100% and can get lowered by mechanics.
                 # These mechanics would have no point if any amount of inspiration mitigated it.
@@ -201,6 +203,26 @@ class Encounter:
                     log.extend(log_damage(data["skill"], final_damage, [target], is_crit, is_miss))
 
                 return log
+            
+            # Receives type == heal, amount of base healing, user object, targets list and skill object
+            case "heal":
+                log = []
+
+                targets = data["targets"]
+                final_heal = data["amount"] + (self.party.power * Party.POWER_SCALING)
+
+                is_crit = self.party.inspiration_check(data["user"].crit_chance + (self.party.focus * Party.FOCUS_CRIT_CHANCE))
+                if is_crit:
+                    final_heal *= crit_multiplier
+
+                final_heal = round(final_heal)
+                for target in targets:
+                    target.get_healed(final_heal)
+                    log.extend(log_heal(data["skill"], final_heal, [target], is_crit))
+
+                return log
+
+                
             
     def handle_boss_action(self, data):
         match (data["type"]):

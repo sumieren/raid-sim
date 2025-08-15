@@ -32,3 +32,19 @@ def fireball(): return Skill(
     effect_function=fn_fireball
 )
 
+def fn_cure(skill, user, targets):
+    amount = user.rng.randint(2,4)
+    return {
+        "type": "heal",
+        "amount": amount,
+        "user": user,
+        "targets": [targets],
+        "skill": skill
+    }
+def cure(): return Skill(
+    name="Cure",
+    description="Heal a single ally.",
+    cooldown=0,
+    effect_function=fn_cure,
+)
+

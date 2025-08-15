@@ -54,7 +54,7 @@ class Job:
             self._cur_hp = self._hp
 
     def get_healed(self, amount):
-        self._cur_hp = max(self._cur_hp + amount, self._hp)
+        self._cur_hp = round(min(self._cur_hp + amount, self._hp))
 
     @property
     def hp(self):
@@ -95,6 +95,7 @@ class Wizard(Job):
         else:
             return (None, ["Wizard was unable to act."])
     
+from skills.skills import cure
 @register_job
 class Priest(Job):
     def __init__(self, rng):
@@ -103,5 +104,17 @@ class Priest(Job):
 
         self.speed = 4
 
+        self.skills = [cure()]
+
     def take_turn(self, game_state):
-        return (None, None)
+        target_list = []
+
+        for member in game_state.party.members:
+            if member.hp < 4:
+                target_list.append(member)
+
+        if not target_list:
+            target_list = game_state.party.members
+        target = game_state.rng.choice(target_list)
+
+        return self.skills[0].cast(self, target)

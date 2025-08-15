@@ -38,7 +38,7 @@ class Party:
         self.alacrity = 0           # Governs gauge and a chance to reduce cd
         self.synergy = 0            # Governs buffs and a chance to give another teammate another action
         self.focus = 0              # Governs crit, accuracy, dodges
-        self.adaptability = 1       # Governs stun rate, provides chance to interrupt boss casts
+        self.adaptability = 0       # Governs stun rate, provides chance to interrupt boss casts
         self.inspiration = 0        # Governs all random chance (skills and stats)
 
     def add_member(self, hero):
