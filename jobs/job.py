@@ -56,6 +56,10 @@ class Job:
     def get_healed(self, amount):
         self._cur_hp = round(min(self._cur_hp + amount, self._hp))
 
+    def alacrity_cd_check(self, game_state):
+        chance = Party.ALACRITY_CD_CHANCE * game_state.party.alacrity
+        return game_state.party.inspiration_check(chance)
+
     @property
     def hp(self):
         return self._cur_hp
