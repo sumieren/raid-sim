@@ -139,9 +139,9 @@ class TrainingDummy(Boss):
         super().__init__(hp=100, rng=rng)
         self.name = "Training Dummy"
 
-        self._cur_phase = Phase(rng, "random", [self.slap])
+        self._cur_phase = Phase(rng, "random", [self.do_nothing])
 
-    def slap(self, game_state):
-        action = self.deal_damage("Slap", 1, 1, game_state.party.members)
-        log = [f"{self.name} slaps everyone!"]
+    def do_nothing(self, game_state):
+        action = None
+        log = [f"{self.name} is a dummy and does literally nothing!"]
         return None, action, log
